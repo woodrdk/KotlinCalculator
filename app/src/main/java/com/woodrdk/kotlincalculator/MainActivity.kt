@@ -81,6 +81,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performOperation(value: String, operation: String){
-        displayOperation.text = operation
+        if(operand1 == null){
+            operand1 = value.toDouble()
+        }
+        else{
+            operand2 = value.toDouble()
+            if(pendingOperation == "="){
+                pendingOperation = operation
+            }
+            when (pendingOperation){
+                "=" -> operand1 = operand2
+                "/" -> if(operand2 == 0.0){
+                          operand1 = Double.NaN // handles attempt to divide by zero
+                       }
+                       else{
+                          operand1 = operand1!! / operand2
+                       }
+                "*" -> operand1 = operand1!! * operand2
+                "+" -> operand1 = operand1!! + operand2
+                "-" -> operand1 = operand1!! - operand2
+            }
+        }
+        result.setText(operand1.toString())
+        newNumber.setText("")
     }
 }
