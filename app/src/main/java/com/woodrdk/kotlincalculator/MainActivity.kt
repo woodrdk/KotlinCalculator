@@ -8,6 +8,10 @@ import android.widget.EditText
 import android.widget.TextView
 import java.lang.NumberFormatException
 
+private const val STATE_PENDING_OPERATION = "PendingOperation"
+private const val STATE_Operand1 = "Operand1"
+private const val STATE_Operand1_Stored = "Operand1_Stored"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var result: EditText
@@ -107,5 +111,28 @@ class MainActivity : AppCompatActivity() {
         }
         result.setText(operand1.toString())
         newNumber.setText("")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if(operand1 != null){
+            outState.putDouble(STATE_Operand1, operand1!! )
+            outState.putBoolean(STATE_Operand1_Stored, true)
+        }
+        outState.putString(STATE_PENDING_OPERATION, pendingOperation)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        operand1 = if(savedInstanceState.getBoolean(STATE_Operand1_Stored,false)){
+            savedInstanceState.getDouble(STATE_Operand1)
+        }
+        else{
+            null
+        }
+        operand1 = savedInstanceState.getDouble(STATE_Operand1)
+
+        pendingOperation = savedInstanceState.getString(STATE_PENDING_OPERATION)
+        displayOperation.text = pendingOperation
     }
 }
